@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wein's Series Bridge</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+  <script
+      src="https://code.jquery.com/jquery-3.5.1.min.js"
+      integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+      crossorigin="anonymous"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+          integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+          crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+          integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+          crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <script src="jsplumb.min.js"></script>
+  
+  <script async="true" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=AM_CHTML"> </script>
+  <script async="true" src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/MathJax.js?config=AM_CHTML"> </script>
+  <script async="true" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=AM_CHTML"> </script>
+  
+  
+  
+  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js"></script> 
+
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+          integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+  <style>
+      #diagram, #toolbox {
+          margin: 20px 0;
+          border-width: 2px;
+          border-style: solid;
+          border-color: lightgrey;
+          height: 90vh;
+      }
+
+      #toolbox {
+          display: flex;
+          padding: 10px;
+          flex-flow: row wrap;
+          align-content: flex-start;
+      }
+
+      .control {
+          border-color: black;
+          border-radius: 10px;
+          border-width: 2px;
+          border-style: solid;
+          width: 60px;
+          text-align: center;
+          cursor: move;
+          height: fit-content;
+          height: -moz-max-content;
+          background-color: white;
+      }
+
+      #diagram .control {
+          position: absolute;
+      }
+
+      .window {
+          z-index: 20;
+      }
+
+      .jtk-connector {
+          z-index: 4;
+      }
+
+      .jtk-endpoint {
+          z-index: 5;
+      }
+
+      .jtk-overlay {
+          z-index: 6;
+      }
+
+      .custom-menu {
+          z-index: 1000;
+          position: absolute;
+          background-color: #C0C0C0;
+          border: 1px solid black;
+          padding: 0px;
+      }
+
+      #toolbox .control {
+          margin: 10px 5px;
+      }
+
+
+      #instruction{
+        margin: 20px 0px;
+          border-width: 2px;
+          border-style: solid;
+          border-color: lightgrey;
+          height: 90vh;
+    }
+
+    #inst{
+      height: 70vh;
+      
+    }
+
+
+
+      .black_overlay {
+        display: none;
+        position: absolute;
+        top: 0%;
+        left: 0%;
+        width: 100%;
+        height: 90%;
+        background-color: black;
+        z-index: 1001;
+        -moz-opacity: 0.8;
+        opacity: .80;
+        filter: alpha(opacity=80);
+      }
+      .white_content {
+        display: none;
+        position: absolute;
+        top: 0%;
+        left: 0%;
+        width: 100%;
+        height: 90%;
+        padding: 8px;
+        border: 8px solid orange;
+        background-color: white;
+        z-index: 1002;
+        overflow: auto;
+      }
+
+
+
+      table, th, td {
+        border:1px solid black;
+        
+      }
+      #myTable{
+        border:1px solid black;
+        width: 250px;
+        height: 10%;
+      }
+
+      @import url('https://fonts.cdnfonts.com/css/seven-segment');
+
+
+      .no-pointer-events {
+        pointer-events: none;
+      }
+
+
+      .slidecontainer {
+        width: 100%;
+      }
+      
+      .slider {
+        appearance: none;
+        width: 100%;
+        height: 25px;
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+      }
+      
+      .slider:hover {
+        opacity: 1;
+      }
+
+      .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        background: #04AA6D;
+        cursor: pointer;
+      }
+      
+      .slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        background: #04AA6D;
+        cursor: pointer;
+      }
+
+
+
+
+
+
+  </style>
+
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2">
+      <div id="toolbox" class="justify-content-center">
+        <div class="control r" ><img src="resistor.png" width="50px" height="50px"></div>
+        <div class="control v" ><img src="voltage_ac.png" width="50px" height="50px"> </div>
+        <div class="control g" ><img src="headphone.jpg" width="50px" height="50px"></div>
+        <div class="control c" ><img src="capacitor.png" width="50px" height="50px"></div>
+      </div>
+    </div>
+    <div class="col-md-7">
+      <div id="diagram" style="height: 90vh; position: relative">
+        <button>Check Circuit</button>
+      </div>
+
+
+      <div id="digital-m" style="background-color:beige; width: 150px; height: 50px; border: 5px solid black; position:absolute;top:20px ; left:580px ; ">
+        <b><p id="digi" style="text-align: right; margin:5px; font-size:1.5rem; font-family:'Seven Segment'sans-serif;color:crimson;">--.--</p></b> 
+      </div>
+      
+
+
+
+    </div>
+
+    <div class="col-md-3" id="instruction">
+      <div id="inst">
+
+
+      
+      <p><a href="javascript:void(0)" onclick="document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'"><b>Instructions</b></a>
+      </p>
+      <div id="light" class="white_content"><b>Wien's Series Bridge Experiment</b><br>
+        <img src="wien_series.jpg" width="150px" height="150px">
+        <ul>&bull;Pick up four resistances, two capacitors a battery and a headphone from the toolbox</ul><br>
+        <ul>&bull;Connect the rersistances, capacitors and the battery as shown in the figure  to form a wheatstone bridge</ul><br>
+        <ul>&bull;After making the circuit click on check circuit button to check the connections</ul>
+        <ul>&bull;Now Enter the values of R1, R2, R3, R4 and the value of voltage and choose appropriate value of frequency and click on the submit button</ul><br>
+        <ul>&bull;Repeat the experiment untill the bridge gets balanced</ul><br>
+        <a href="javascript:void(0)" onclick="document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close</a>
+      </div>
+      <div id="fade" class="black_overlay"></div>
+   
+      <p><a href="javascript:void(0)" onclick="document.getElementById('light2').style.display='block';document.getElementById('fade').style.display='block'"><b>Observations</b></a>
+      </p>
+      <div id="light2" class="white_content"><b>Observation Table</b><br>
+        <table id="myTable">
+          <tr>
+              <th>R1</th>
+              <th>R2</th>
+              <th>R3</th>
+              <th>R4</th>
+              <th>V</th>
+              <th>C</th>
+          </tr>
+      </table>
+        <a href="javascript:void(0)" onclick="document.getElementById('light2').style.display='none';document.getElementById('fade').style.display='none'">Close</a>
+      </div>
+      <div id="fade" class="black_overlay"></div>
+    
+    
+
+
+      <p><a href="javascript:void(0)" onclick="document.getElementById('light1').style.display='block';document.getElementById('fade').style.display='block'"><b>Formulae</b></a>
+      </p>
+      <div id="light1" class="white_content"><b>Wien's Series Bridge Experiment</b><br>
+
+
+        
+
+        <div id="formulae">
+
+            
+          <p>C1=Capacitor whose capacitance is to be measured,<br>
+
+            R1
+            = A series resistance representing the loss in the capacitor C1
+            ,<br>
+            
+            C4
+             = A standard capacitance with series resistance of R4
+            ,<br>
+            
+            R2
+             and R3
+             = Non-inductive resistances.</p>
+          
+          <h5>At Balance: </h5>
+
+
+<!-- 
+          <span class="math" id="MathJax-Span-50" style="width: 22.513em; display: inline-block;"><span style="display: inline-block; position: relative; width: 18.295em; height: 0px; font-size: 123%;"><span style="position: absolute; clip: rect(1.781em, 1018.29em, 4.525em, -999.997em); top: -3.402em; left: 0em;"><span class="mrow" id="MathJax-Span-51"><span class="mstyle" id="MathJax-Span-52"><span class="mrow" id="MathJax-Span-53"><span class="mrow" id="MathJax-Span-54"><span class="mo" id="MathJax-Span-55" style="vertical-align: 0em;"><span style="font-family: MathJax_Size3;">(</span></span><span class="msub" id="MathJax-Span-56"><span style="display: inline-block; position: relative; width: 1.171em; height: 0px;"><span style="position: absolute; clip: rect(3.204em, 1000.76em, 4.169em, -999.997em); top: -4.012em; left: 0em;"><span class="mi" id="MathJax-Span-57" style="font-family: MathJax_Math-italic;">R</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; top: -3.859em; left: 0.765em;"><span class="mn" id="MathJax-Span-58" style="font-size: 70.7%; font-family: MathJax_Main;">1</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span></span></span><span class="mo" id="MathJax-Span-59" style="font-family: MathJax_Main; padding-left: 0.257em; padding-right: 0.257em;">+</span><span class="mfrac" id="MathJax-Span-60"><span style="display: inline-block; position: relative; width: 2.289em; height: 0px; margin-right: 0.104em; margin-left: 0.104em;"><span style="position: absolute; clip: rect(3.204em, 1000.41em, 4.169em, -999.997em); top: -4.672em; left: 50%; margin-left: -0.252em;"><span class="mn" id="MathJax-Span-61" style="font-family: MathJax_Main;">1</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; clip: rect(3.153em, 1002.19em, 4.372em, -999.997em); top: -3.351em; left: 50%; margin-left: -1.065em;"><span class="mrow" id="MathJax-Span-62"><span class="mi" id="MathJax-Span-63" style="font-family: MathJax_Math-italic;">j</span><span class="mi" id="MathJax-Span-64" style="font-family: MathJax_Math-italic;">ω</span><span class="msub" id="MathJax-Span-65"><span style="display: inline-block; position: relative; width: 1.171em; height: 0px;"><span style="position: absolute; clip: rect(3.153em, 1000.76em, 4.169em, -999.997em); top: -4.012em; left: 0em;"><span class="mi" id="MathJax-Span-66" style="font-family: MathJax_Math-italic;">C<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.053em;"></span></span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; top: -3.859em; left: 0.714em;"><span class="mn" id="MathJax-Span-67" style="font-size: 70.7%; font-family: MathJax_Main;">1</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; clip: rect(0.866em, 1002.29em, 1.222em, -999.997em); top: -1.268em; left: 0em;"><span style="display: inline-block; overflow: hidden; vertical-align: 0em; border-top: 1.3px solid; width: 2.289em; height: 0px;"></span><span style="display: inline-block; width: 0px; height: 1.07em;"></span></span></span></span><span class="mo" id="MathJax-Span-68" style="vertical-align: 0em;"><span style="font-family: MathJax_Size3;">)</span></span></span><span class="mo" id="MathJax-Span-69" style="font-family: MathJax_Main; padding-left: 0.257em; padding-right: 0.257em;">⋅</span><span class="msub" id="MathJax-Span-70"><span style="display: inline-block; position: relative; width: 1.171em; height: 0px;"><span style="position: absolute; clip: rect(3.204em, 1000.76em, 4.169em, -999.997em); top: -4.012em; left: 0em;"><span class="mi" id="MathJax-Span-71" style="font-family: MathJax_Math-italic;">R</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; top: -3.859em; left: 0.765em;"><span class="mn" id="MathJax-Span-72" style="font-size: 70.7%; font-family: MathJax_Main;">3</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span></span></span><span class="mo" id="MathJax-Span-73" style="font-family: MathJax_Main; padding-left: 0.358em; padding-right: 0.358em;">=</span><span class="mrow" id="MathJax-Span-74"><span class="mo" id="MathJax-Span-75" style="vertical-align: 0em;"><span style="font-family: MathJax_Size3;">(</span></span><span class="msub" id="MathJax-Span-76"><span style="display: inline-block; position: relative; width: 1.171em; height: 0px;"><span style="position: absolute; clip: rect(3.204em, 1000.76em, 4.169em, -999.997em); top: -4.012em; left: 0em;"><span class="mi" id="MathJax-Span-77" style="font-family: MathJax_Math-italic;">R</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; top: -3.859em; left: 0.765em;"><span class="mn" id="MathJax-Span-78" style="font-size: 70.7%; font-family: MathJax_Main;">4</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span></span></span><span class="mo" id="MathJax-Span-79" style="font-family: MathJax_Main; padding-left: 0.257em; padding-right: 0.257em;">+</span><span class="mfrac" id="MathJax-Span-80"><span style="display: inline-block; position: relative; width: 2.289em; height: 0px; margin-right: 0.104em; margin-left: 0.104em;"><span style="position: absolute; clip: rect(3.204em, 1000.41em, 4.169em, -999.997em); top: -4.672em; left: 50%; margin-left: -0.252em;"><span class="mn" id="MathJax-Span-81" style="font-family: MathJax_Main;">1</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; clip: rect(3.153em, 1002.19em, 4.372em, -999.997em); top: -3.351em; left: 50%; margin-left: -1.065em;"><span class="mrow" id="MathJax-Span-82"><span class="mi" id="MathJax-Span-83" style="font-family: MathJax_Math-italic;">j</span><span class="mi" id="MathJax-Span-84" style="font-family: MathJax_Math-italic;">ω</span><span class="msub" id="MathJax-Span-85"><span style="display: inline-block; position: relative; width: 1.171em; height: 0px;"><span style="position: absolute; clip: rect(3.153em, 1000.76em, 4.169em, -999.997em); top: -4.012em; left: 0em;"><span class="mi" id="MathJax-Span-86" style="font-family: MathJax_Math-italic;">C<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.053em;"></span></span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; top: -3.859em; left: 0.714em;"><span class="mn" id="MathJax-Span-87" style="font-size: 70.7%; font-family: MathJax_Main;">4</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; clip: rect(0.866em, 1002.29em, 1.222em, -999.997em); top: -1.268em; left: 0em;"><span style="display: inline-block; overflow: hidden; vertical-align: 0em; border-top: 1.3px solid; width: 2.289em; height: 0px;"></span><span style="display: inline-block; width: 0px; height: 1.07em;"></span></span></span></span><span class="mo" id="MathJax-Span-88" style="vertical-align: 0em;"><span style="font-family: MathJax_Size3;">)</span></span></span><span class="mo" id="MathJax-Span-89" style="font-family: MathJax_Main; padding-left: 0.257em; padding-right: 0.257em;">⋅</span><span class="msub" id="MathJax-Span-90"><span style="display: inline-block; position: relative; width: 1.171em; height: 0px;"><span style="position: absolute; clip: rect(3.204em, 1000.76em, 4.169em, -999.997em); top: -4.012em; left: 0em;"><span class="mi" id="MathJax-Span-91" style="font-family: MathJax_Math-italic;">R</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; top: -3.859em; left: 0.765em;"><span class="mn" id="MathJax-Span-92" style="font-size: 70.7%; font-family: MathJax_Main;">2</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 3.407em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -1.247em; border-left: 0px solid; width: 0px; height: 3.066em;"></span></span>
+              <br>
+
+          <span class="MathJax" id="MathJax-Element-9-Frame" tabindex="0" data-mathml="<math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;><mstyle displaystyle=&quot;true&quot;><msub><mi>R</mi><mn>1</mn></msub><msub><mi>R</mi><mn>3</mn></msub><mo>+</mo><mfrac><msub><mi>R</mi><mn>3</mn></msub><mrow><mi>j</mi><mi>&amp;#x3C9;</mi><msub><mi>C</mi><mn>1</mn></msub></mrow></mfrac><mo>=</mo><msub><mi>R</mi><mn>2</mn></msub><msub><mi>R</mi><mn>4</mn></msub><mo>+</mo><mfrac><msub><mi>R</mi><mn>2</mn></msub><mrow><mi>j</mi><mi>&amp;#x3C9;</mi><msub><mi>C</mi><mn>4</mn></msub></mrow></mfrac></mstyle></math>" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-93" style="width: 16.974em; display: inline-block;"><span style="display: inline-block; position: relative; width: 13.773em; height: 0px; font-size: 123%;"><span style="position: absolute; clip: rect(1.019em, 1013.77em, 3.61em, -999.997em); top: -2.538em; left: 0em;"><span class="mrow" id="MathJax-Span-94"><span class="mstyle" id="MathJax-Span-95"><span class="mrow" id="MathJax-Span-96"><span class="msub" id="MathJax-Span-97"><span style="display: inline-block; position: relative; width: 1.171em; height: 0px;"><span style="position: absolute; clip: rect(3.204em, 1000.76em, 4.169em, -999.997em); top: -4.012em; left: 0em;"><span class="mi" id="MathJax-Span-98" style="font-family: MathJax_Math-italic;">R</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; top: -3.859em; left: 0.765em;"><span class="mn" id="MathJax-Span-99" style="font-size: 70.7%; font-family: MathJax_Main;">1</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span></span></span><span class="msub" id="MathJax-Span-100"><span style="display: inline-block; position: relative; width: 1.171em; height: 0px;"><span style="position: absolute; clip: rect(3.204em, 1000.76em, 4.169em, -999.997em); top: -4.012em; left: 0em;"><span class="mi" id="MathJax-Span-101" style="font-family: MathJax_Math-italic;">R</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; top: -3.859em; left: 0.765em;"><span class="mn" id="MathJax-Span-102" style="font-size: 70.7%; font-family: MathJax_Main;">3</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span></span></span><span class="mo" id="MathJax-Span-103" style="font-family: MathJax_Main; padding-left: 0.257em; padding-right: 0.257em;">+</span><span class="mfrac" id="MathJax-Span-104"><span style="display: inline-block; position: relative; width: 2.289em; height: 0px; margin-right: 0.104em; margin-left: 0.104em;"><span style="position: absolute; clip: rect(3.204em, 1001.17em, 4.322em, -999.997em); top: -4.672em; left: 50%; margin-left: -0.607em;"><span class="msub" id="MathJax-Span-105"><span style="display: inline-block; position: relative; width: 1.171em; height: 0px;"><span style="position: absolute; clip: rect(3.204em, 1000.76em, 4.169em, -999.997em); top: -4.012em; left: 0em;"><span class="mi" id="MathJax-Span-106" style="font-family: MathJax_Math-italic;">R</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; top: -3.859em; left: 0.765em;"><span class="mn" id="MathJax-Span-107" style="font-size: 70.7%; font-family: MathJax_Main;">3</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span></span></span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; clip: rect(3.153em, 1002.19em, 4.372em, -999.997em); top: -3.351em; left: 50%; margin-left: -1.065em;"><span class="mrow" id="MathJax-Span-108"><span class="mi" id="MathJax-Span-109" style="font-family: MathJax_Math-italic;">j</span><span class="mi" id="MathJax-Span-110" style="font-family: MathJax_Math-italic;">ω</span><span class="msub" id="MathJax-Span-111"><span style="display: inline-block; position: relative; width: 1.171em; height: 0px;"><span style="position: absolute; clip: rect(3.153em, 1000.76em, 4.169em, -999.997em); top: -4.012em; left: 0em;"><span class="mi" id="MathJax-Span-112" style="font-family: MathJax_Math-italic;">C<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.053em;"></span></span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; top: -3.859em; left: 0.714em;"><span class="mn" id="MathJax-Span-113" style="font-size: 70.7%; font-family: MathJax_Main;">1</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; clip: rect(0.866em, 1002.29em, 1.222em, -999.997em); top: -1.268em; left: 0em;"><span style="display: inline-block; overflow: hidden; vertical-align: 0em; border-top: 1.3px solid; width: 2.289em; height: 0px;"></span><span style="display: inline-block; width: 0px; height: 1.07em;"></span></span></span></span><span class="mo" id="MathJax-Span-114" style="font-family: MathJax_Main; padding-left: 0.358em; padding-right: 0.358em;">=</span><span class="msub" id="MathJax-Span-115"><span style="display: inline-block; position: relative; width: 1.171em; height: 0px;"><span style="position: absolute; clip: rect(3.204em, 1000.76em, 4.169em, -999.997em); top: -4.012em; left: 0em;"><span class="mi" id="MathJax-Span-116" style="font-family: MathJax_Math-italic;">R</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; top: -3.859em; left: 0.765em;"><span class="mn" id="MathJax-Span-117" style="font-size: 70.7%; font-family: MathJax_Main;">2</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span></span></span><span class="msub" id="MathJax-Span-118"><span style="display: inline-block; position: relative; width: 1.171em; height: 0px;"><span style="position: absolute; clip: rect(3.204em, 1000.76em, 4.169em, -999.997em); top: -4.012em; left: 0em;"><span class="mi" id="MathJax-Span-119" style="font-family: MathJax_Math-italic;">R</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; top: -3.859em; left: 0.765em;"><span class="mn" id="MathJax-Span-120" style="font-size: 70.7%; font-family: MathJax_Main;">4</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span></span></span><span class="mo" id="MathJax-Span-121" style="font-family: MathJax_Main; padding-left: 0.257em; padding-right: 0.257em;">+</span><span class="mfrac" id="MathJax-Span-122"><span style="display: inline-block; position: relative; width: 2.289em; height: 0px; margin-right: 0.104em; margin-left: 0.104em;"><span style="position: absolute; clip: rect(3.204em, 1001.17em, 4.322em, -999.997em); top: -4.672em; left: 50%; margin-left: -0.607em;"><span class="msub" id="MathJax-Span-123"><span style="display: inline-block; position: relative; width: 1.171em; height: 0px;"><span style="position: absolute; clip: rect(3.204em, 1000.76em, 4.169em, -999.997em); top: -4.012em; left: 0em;"><span class="mi" id="MathJax-Span-124" style="font-family: MathJax_Math-italic;">R</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; top: -3.859em; left: 0.765em;"><span class="mn" id="MathJax-Span-125" style="font-size: 70.7%; font-family: MathJax_Main;">2</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span></span></span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; clip: rect(3.153em, 1002.19em, 4.372em, -999.997em); top: -3.351em; left: 50%; margin-left: -1.065em;"><span class="mrow" id="MathJax-Span-126"><span class="mi" id="MathJax-Span-127" style="font-family: MathJax_Math-italic;">j</span><span class="mi" id="MathJax-Span-128" style="font-family: MathJax_Math-italic;">ω</span><span class="msub" id="MathJax-Span-129"><span style="display: inline-block; position: relative; width: 1.171em; height: 0px;"><span style="position: absolute; clip: rect(3.153em, 1000.76em, 4.169em, -999.997em); top: -4.012em; left: 0em;"><span class="mi" id="MathJax-Span-130" style="font-family: MathJax_Math-italic;">C<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.053em;"></span></span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; top: -3.859em; left: 0.714em;"><span class="mn" id="MathJax-Span-131" style="font-size: 70.7%; font-family: MathJax_Main;">4</span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 4.017em;"></span></span><span style="position: absolute; clip: rect(0.866em, 1002.29em, 1.222em, -999.997em); top: -1.268em; left: 0em;"><span style="display: inline-block; overflow: hidden; vertical-align: 0em; border-top: 1.3px solid; width: 2.289em; height: 0px;"></span><span style="display: inline-block; width: 0px; height: 1.07em;"></span></span></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.543em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -1.184em; border-left: 0px solid; width: 0px; height: 2.878em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mstyle displaystyle="true"><msub><mi>R</mi><mn>1</mn></msub><msub><mi>R</mi><mn>3</mn></msub><mo>+</mo><mfrac><msub><mi>R</mi><mn>3</mn></msub><mrow><mi>j</mi><mi>ω</mi><msub><mi>C</mi><mn>1</mn></msub></mrow></mfrac><mo>=</mo><msub><mi>R</mi><mn>2</mn></msub><msub><mi>R</mi><mn>4</mn></msub><mo>+</mo><mfrac><msub><mi>R</mi><mn>2</mn></msub><mrow><mi>j</mi><mi>ω</mi><msub><mi>C</mi><mn>4</mn></msub></mrow></mfrac></mstyle></math></span></span>
+       -->
+
+          <br>
+
+          <p>Equating the real and imaginary terms, </p>
+
+          
+
+        <script type="math/asciimath" id="MathJax-Element-8">(R_1 + 1/ (jomegaC_1)) * R_3 = (R_4 + 1/ (jomegaC_4)) * R_2</script><br><br>
+
+          <script type="math/asciimath" id="MathJax-Element-10">R_1R_3 = R_2R_4</script>
+          <br><br>
+          <script type="math/asciimath" id="MathJax-Element-11">R_1 = (R_2R_4)/R_3</script>
+         <br><br>
+
+         <script type="math/asciimath" id="MathJax-Element-12">(1/ (jomegaC_1)) * R_3 = (1/ (jomegaC_4)) * R_2</script><br>
+          <br>
+          
+
+
+         <p>Measure capacitance value is</p>
+          <script type="math/asciimath" id="MathJax-Element-14">C_1 =(C_4R_3)/R_2</script>
+          
+           
+          </div>
+
+
+        <a href="javascript:void(0)" onclick="document.getElementById('light1').style.display='none';document.getElementById('fade').style.display='none'">Close</a>
+      </div>
+      <div id="fade" class="black_overlay"></div>
+
+
+
+
+      <div id="mydiv" style="display: none;">
+        <br>
+        <p>C2= 0.001 uF</p>
+        <form action="#" onsubmit="yourJsFunction();return false">
+          <div class="slidecontainer">
+            
+	           &nbsp;R1 : 1Ω
+            <!-- <span class="MathJax" id="MathJax-Element-23-Frame" tabindex="0" data-mathml="<math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;><mstyle displaystyle=&quot;true&quot;><mo>&amp;#x2126;</mo></mstyle></math>" role="presentation" style="position: relative;"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-134" style="width: 0.792em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.731em; height: 0px; font-size: 103%;"><span style="position: absolute; clip: rect(1.217em, 1000.67em, 2.309em, -999.997em); top: -2.121em; left: 0em;"><span class="mrow" id="MathJax-Span-135"><span class="mstyle" id="MathJax-Span-136"><span class="mrow" id="MathJax-Span-137"><span class="mo" id="MathJax-Span-138" style="font-family: MathJax_Main;">Ω</span></span></span></span><span style="display: inline-block; width: 0px; height: 2.127em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.059em; border-left: 0px solid; width: 0px; height: 0.878em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mstyle displaystyle="true"><mo>Ω</mo></mstyle></math></span></span>
+            <script type="math/asciimath" id="MathJax-Element-23">Ω</script>
+            &nbsp;  -->
+            
+            
+            <input type="range" min="1" max="1000" value="1" id="myRange1" step="0.05" onchange="data1.value=this.value; document.getElementById('r1_tag0').innerHTML='R1 = '+this.value+'&nbsp;Ω'" style="width: 110px" >&nbsp; 1 KΩ
+            <input type="number" name="data1" id="data1" step="0.05" onchange="myRange1.value=this.value; document.getElementById('r1_tag0').innerHTML='R1 = '+this.value+'&nbsp;Ω'" style="width: 60px; height:20px">
+          
+
+            
+          
+          
+          </div>
+
+          <div class="slidecontainer">
+            &nbsp;R2 : 1Ω
+            <input type="range" min="1" max="1000" value="1" id="myRange2" step="0.05" onchange="data2.value=this.value; document.getElementById('r1_tag1').innerHTML='R2 = '+this.value+'&nbsp;Ω'" style="width: 110px" >&nbsp; 1 KΩ
+            <input type="number" name="data2" id="data2" step="0.05" onchange="myRange2.value=this.value; document.getElementById('r1_tag1').innerHTML='R2 = '+this.value+'&nbsp;Ω'" style="width: 60px; height:20px">
+          </div>
+
+          <div class="slidecontainer">
+            &nbsp;R3 : 1Ω
+            <input type="range" min="1" max="1000" value="1" id="myRange" step="0.05" onchange="data6.value=this.value; document.getElementById('r1_tag2').innerHTML='R3 = '+this.value+'&nbsp;Ω'" style="width: 110px" >&nbsp; 1 KΩ
+            <input type="number" name="data6" id="data6" step="0.05" onchange="myRange.value=this.value; document.getElementById('r1_tag2').innerHTML='R3 = '+this.value+'&nbsp;Ω'" style="width: 60px; height:20px">
+          </div>
+
+          
+          <div class="slidecontainer">
+            &nbsp;R4 : 1Ω
+            <input type="range" min="1" max="1000" value="1" id="myRange3" step="0.05" onchange="data4.value=this.value; document.getElementById('r1_tag3').innerHTML='R4 = '+this.value+'&nbsp;Ω'" style="width: 110px" >&nbsp; 1 KΩ
+            <input type="number" name="data4" id="data4" step="0.05" onchange="myRange3.value=this.value; document.getElementById('r1_tag3').innerHTML='R4 = '+this.value+'&nbsp;Ω'" style="width: 60px; height:20px">
+          </div>
+
+          <p>V: <input type="number" id="data5" style="width: 60px;">
+            f: <input type="number" id="data7" style="width: 60px;">
+          </p>
+          
+
+
+          <input type="submit"/>
+          
+      </form>
+      
+      
+      </div>
+
+    <div id="abcde" style="position: absolute;top:460px ; left:100px ;">
+      <button onClick="window.location.reload();">Reset</button>
+      <button onClick="window.print();">Print Report</button>
+    </div>
+
+    </div>
+    
+    </div>
+    
+    
+  </div>
+  
+</div>
+<script>
+
+
+const mydiv=document.getElementById('mydiv');
+var data4=1;let c_ratio=1;
+
+ 
+function yourJsFunction(){
+//mydiv.style.display="none";
+
+var data1 = document.getElementById("data1").value;
+var data2 = document.getElementById("data2").value;
+var data4 = document.getElementById("data4").value;
+var data5 = document.getElementById("data5").value;
+var data3 = document.getElementById("data6").value;
+
+
+if(data1=="" || data2=="" || data4=="" || data5=="" )
+			{
+				swal("Fill empty values");
+
+				return;}
+
+
+  
+      
+
+
+      if(data1<=0 || data2<=0 || data4<=0 || data5<=0 )
+			{
+				swal("Invalid Values");
+
+				return;}
+			// Create a new table row for each input value
+      
+            var row = document.createElement("tr");
+            var cur=c_ratio*0.001;
+
+           
+
+
+
+
+
+      const arr=[data1,data2,data3,data4,data5];
+
+      console.log(data3);
+      var res=Math.max((c_ratio-(data2/data1))/100,(c_ratio-(data4/data3))/100);
+      res=res.toFixed(3);
+      document.getElementById("digi").innerHTML=res;
+
+      if(c_ratio==data4/data3 && c_ratio==data2/data1){
+       // document.getElementById("light1").innerHTML+=`<h4>Bridge is Balanced</h4>
+       // <h5>Equivalent Resistance:</h5><b> `+ frac(1)(r1+r3)+ ` </b>`;
+       swal("Balanced Bridge");
+       for (var i = 1; i <= 5; i++) {
+				// Get the value of the current input field
+				var data = arr[i-1];
+
+				// Create a new table row element
+
+				// Create a new table data element
+				var cell = document.createElement("td");
+				cell.innerHTML = data;
+
+				// Add the table data to the table row
+				row.appendChild(cell);
+
+				// Add the table row to the table
+				document.getElementById("myTable").appendChild(row);
+			}
+
+
+    var cell = document.createElement("td");
+    cell.innerHTML = cur+"uF";
+    row.appendChild(cell);
+    document.getElementById("myTable").appendChild(row);
+           
+
+      }
+
+
+      else if(c_ratio==data4/data3 || c_ratio==data2/data1){
+        var audio = new Audio('audio2_detector.mp3');
+        audio.play();
+        audio.volume=0.2;
+        swal("Unbalanced");
+        audio.addEventListener("canplaythrough", function () {
+          setTimeout(function(){
+              audio.pause();
+          },
+          5000);
+  }, false); 
+        
+      }
+
+      else{
+        var audio = new Audio('audio1_detector.mp3');
+        audio.play();
+        audio.volume=0.1;
+        swal("Unbalanced");
+        audio.addEventListener("canplaythrough", function () {
+          setTimeout(function(){
+              audio.pause();
+          },
+          3000);
+  }, false); 
+        
+      }
+}
+
+
+
+
+   var count1=1,count2=1,count3=1,count4=1;
+  // https://stackoverflow.com/a/2117523
+  function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+  instance = jsPlumb.getInstance({});
+  instance.setContainer("diagram");
+  instance.bind("ready", function () {
+    instance.registerConnectionTypes({
+      "red-connection": {
+        paintStyle: {stroke: "blue", strokeWidth: 2},
+        hoverPaintStyle: {stroke: "blue", strokeWidth: 4},
+        connector: "Flowchart"
+      }
+    });
+    /*instance.draggable("control1", {"containment": true});
+    instance.draggable("control2", {"containment": true})
+    instance.addEndpoint("control1", {
+      endpoint: "Dot",  // rectangle, blank, image
+      anchor: ["RightMiddle"],
+      isSource: true,
+      connectionType: "red-connection"
+    });
+    instance.addEndpoint("control2", {
+      endpoint: "Dot",
+      anchor: ["LeftMiddle"],
+      isTarget: true,
+      connectionType: "red-connection"
+    });*/
+
+    // https://stackoverflow.com/a/4502207
+
+    $(document).bind("click", function (event) {
+      $("div.custom-menu").remove();
+    });
+
+    $("body").on("contextmenu", "#diagram .control", function (event) {
+      event.preventDefault();
+      window.selectedControl = $(this).attr("id");
+      console.log(window.selectedControl);
+      $("<div class='custom-menu'><button class='delete-control'>Delete control</button></div>")
+      .appendTo("body")
+      .css({top: event.pageY + "px", left: event.pageX + "px"});
+
+
+      
+
+
+      
+
+
+    });
+
+   
+
+    $("body").on("click", ".delete-control", function (event) {
+      instance.remove(window.selectedControl);
+      
+    });
+
+    $("#toolbox .control").draggable({
+      helper: "clone",
+      containment: ".body",
+      appendTo: "#diagram"
+    });
+
+
+    $("#diagram").droppable({
+      drop: function(event, ui) {
+        var id;
+        var clone = $(ui.helper).clone(true);
+        var s=clone.attr("class");
+        if(s[8]=='r')
+         { id= s[8]+count1.toString();
+        count1++;}
+        else if(s[8]=='v')
+         { id= s[8]+count2.toString();
+        count2++;}
+        else if(s[8]=='g')
+         { id= s[8]+count3.toString();
+        count3++;}
+        else if(s[8]=='c')
+         { id= s[8]+count4.toString();
+        count4++;}
+
+
+        clone.attr("id", id);
+        clone.appendTo(this);
+
+
+        /*
+        var id1=id+'d';
+        console.log(id1);
+        var id2=id+'div';
+        var left_p=clone.position().left;
+        var top_p=clone.position().top;
+        $("<div id="+id2+" style = 'position: relative;top:"+top_p +"px ; left:"+ left_p+"px ;'><form><input type='number' placeholder='Value' id="+ id1 +" style='width: 100px;'></form></div>")
+        .appendTo("#diagram");
+      var button = document.getElementById(id);
+      var myDiv = document.getElementById(id2);
+
+      function show() {
+          myDiv.style.visibility = "visible";
+      }
+
+      function hide() {
+          myDiv.style.visibility = "hidden";
+      }
+
+      function toggle() {
+          if (myDiv.style.visibility === "hidden") {
+              show();
+          } else {
+              hide();
+          }
+      }
+
+      hide();
+
+      button.addEventListener("click", toggle, false);
+
+*/
+
+
+
+
+
+        instance.draggable(id, {containment: true});
+
+
+        if(id[0]=='v'){
+          
+          instance.addEndpoint(id, {
+            endpoint: [ "Dot", { radius:6 } ],maxConnections:2,
+            anchor: ["Left"],
+            isSource: true,paintStyle:{ fill:"red" },
+            connectionType: "red-connection"
+          });
+  
+          instance.addEndpoint(id, {
+            endpoint:[ "Dot", { radius:6 } ], maxConnections:2,
+            anchor: ["Right"],
+            isTarget: true,
+            connectionType: "red-connection"
+          });
+
+        }
+        else if(id[0]=='g'){
+          instance.addEndpoint(id, {
+            endpoint: [ "Dot", { radius:6 } ],
+            anchor: ["Left"],
+            isTarget: true,
+            connectionType: "red-connection"
+          });
+  
+          instance.addEndpoint(id, {
+            endpoint: [ "Dot", { radius:6 } ],
+            anchor: ["Right"],paintStyle:{ fill:"red" },
+            isSource: true,
+            connectionType: "red-connection"
+          });
+
+        }
+        else
+        {instance.addEndpoint(id, {
+          endpoint:[ "Dot", { radius:6 } ],maxConnections:2,
+          anchor: ["Right"],paintStyle:{ fill:"red" },
+          isSource: true,
+          connectionType: "red-connection"
+        });
+
+        instance.addEndpoint(id, {
+          endpoint: [ "Dot", { radius:6 } ], maxConnections:2,
+          anchor: ["Left"],
+          isTarget: true,
+          connectionType: "red-connection"
+        });}
+      }
+    })
+
+  });
+
+
+
+/*var slider = document.getElementById("myRange");
+
+
+
+slider.oninput = function() {
+  data3 = this.value;
+  output.innerHTML = this.value;
+}*/
+     
+
+document.getElementsByTagName("button")[0].onclick = contagem;
+
+function contagem() {
+   
+    var allConnections = instance.getConnections({
+        //scope: "someScope"
+    });
+    const Tid=[];const Sid=[];
+    //alert(allConnections.length);
+    for (var i = 0; i < allConnections.length; i++) {
+        var target = allConnections[i].targetId;
+        var source = allConnections[i].sourceId;
+        Tid[i]=target;
+        Sid[i]=source;
+    }
+    const set1=new Set();
+    for(var i=0;i<Tid.length;i++){
+         set1.add(Tid[i]);
+    }
+    const arr=[...set1].sort();
+    const set_1=new Set(arr);
+    const set2=new Set();
+    for(var i=0;i<Sid.length;i++){
+         set2.add(Sid[i]);
+    }
+    const arr1=[...set2].sort();const arr_r=[];const arr_c=[];
+    var c_r=0,c_v=0,c_c=0,c_g=0,s_v,j=0,k=0;
+    for(var i=0;i<arr1.length;i++){
+      if(arr1[i][0]=='r')
+       {c_r++;arr_r[j]=arr1[i];j++;}
+      else if(arr1[i][0]=='v')
+       {c_v++;s_v=arr1[i];}
+       else if(arr1[i][0]=='c')
+       {c_c++; arr_c[k]=arr1[i];k++;}
+      else
+       c_g++;
+    }
+    const set_2=new Set(arr1);
+    console.log(arr_r);
+    if(Tid.length!=10 || Sid.length!=10 || !setsAreEqual(set_1,set_2) || c_r!=4 || c_v!=1 || c_g!=1 || c_c!=2){
+      alert("Wrong Connections");
+    }
+    else{
+      var amp={};
+      for(var i=0;i<Sid.length;i++){
+        amp[Sid[i]]=amp[Sid[i]] || [];
+        amp[Sid[i]].push(Tid[i]);
+      }
+      for(var i=0;i<Tid.length;i++){
+        amp[Tid[i]]=amp[Tid[i]] || [];
+        amp[Tid[i]].push(Sid[i]);
+      }
+      console.log(amp);
+      const s_element=new Set();
+      var s=amp[arr[2]][0];
+      s_element.add(s);
+      const r_pos=[],c_pos=[];
+      if((s[0]!='r' && s[0]!='c') ||amp[s].length!=3 || (amp[s][0]!=arr[7] && (amp[s][0][0]!='c' && amp[s][0][0]!='r' )) ){
+        alert("Wrong Connection");
+      }
+      else{
+        if(amp[s][0]==arr[7] && s[0]=='r'){
+
+        var r_top=document.querySelector('#'+s + '').getBoundingClientRect().top +30;
+        var r_left=document.querySelector('#'+s + '').getBoundingClientRect().left -220;
+        r_pos[2]=[r_top,r_left];
+
+        
+          if(amp[s][2]!=arr[2])
+          s=amp[s][2];
+          else
+           s=amp[s][1];
+          
+        if((s[0]!='r' || amp[s].length!=2 || amp[s][1][0]!='c') && (s[0]!='c' || amp[s].length!=2 || amp[s][1][0]!='r')){
+          alert("Wrong Connection");
+        }
+        else{
+
+        r_top=document.querySelector('#'+s + '').getBoundingClientRect().top +30;
+        r_left=document.querySelector('#'+s+ '').getBoundingClientRect().left -210;
+        if(s[0]=='r')
+        r_pos[0]=[r_top,r_left];
+
+        else{
+          c_pos[0]=[r_top,r_left];
+        }
+
+
+
+
+          s=amp[s][1];
+          if((s[0]!='c' ||amp[s].length!=2 || amp[s][1]!=arr[7]) && (s[0]!='r' ||amp[s].length!=2 || amp[s][1]!=arr[7])){
+            alert("Wrong Connection");
+          }
+          else{
+
+            r_top=document.querySelector('#'+s + '').getBoundingClientRect().top +30;
+            r_left=document.querySelector('#'+s+ '').getBoundingClientRect().left -230;
+            if(s[0]=='r')
+            r_pos[0]=[r_top,r_left];
+
+            else{
+              c_pos[0]=[r_top,r_left];
+            }
+
+
+
+            s=amp[arr[2]][1];
+            if((s[0]!='r' ||amp[s].length!=3 || amp[s][2][0]!='c') && (s[0]!='c' ||amp[s].length!=3 || amp[s][2][0]!='r')){
+              alert("Wrong Connection");
+            }
+            else{
+
+              r_top=document.querySelector('#'+s + '').getBoundingClientRect().top +30;
+              r_left=document.querySelector('#'+s+ '').getBoundingClientRect().left -220;
+              if(s[0]=='r')
+              r_pos[1]=[r_top,r_left];
+
+              else{
+                c_pos[1]=[r_top,r_left];
+              }
+
+
+
+              s=amp[s][2];
+          if((s[0]!='c' ||amp[s].length!=2 || amp[s][1]!=arr[7]) && (s[0]!='r' || amp[s].length!=2 || amp[s][1]!=arr[7])){
+            alert("Wrong Connection");
+          }
+
+          else{
+
+            r_top=document.querySelector('#'+s + '').getBoundingClientRect().top +30;
+            r_left=document.querySelector('#'+s+ '').getBoundingClientRect().left -220;
+            if(s[0]=='r')
+            r_pos[1]=[r_top,r_left];
+
+            else{
+              c_pos[1]=[r_top,r_left];
+            }
+
+
+
+
+
+            if(amp[amp[s][0]][1]!=arr[2])
+          s=amp[amp[s][0]][1];
+          else
+           s=amp[amp[s][0]][0];
+           if(s[0]!='r' ||amp[s].length!=2 || amp[s][0]!=arr[7]){
+            alert("Wrong Connection");
+          }
+
+          else{
+
+            r_top=document.querySelector('#'+s + '').getBoundingClientRect().top +30;
+            r_left=document.querySelector('#'+s+ '').getBoundingClientRect().left -220;
+            r_pos[3]=[r_top,r_left];
+
+
+            alert("Right Connections...Go Ahead!!");
+
+              c_ratio=Math.max(Math.floor((Math.random()*5) + 1),1); 
+              console.log(c_ratio);
+
+
+
+
+
+
+              var v_top=document.querySelector('#'+s_v + '').getBoundingClientRect().top + 30;
+              var v_left=document.querySelector('#'+s_v + '').getBoundingClientRect().left - 220;
+
+              $("<div id='abcd' style = 'position: absolute;top:"+v_top +"px ; left:"+ v_left+"px ;'><b>+  V,f  -</b></div>")
+              .appendTo("#diagram");
+
+
+              for(var i=0;i<4;i++){
+                $("<div id='r1_tag"+i+"' style = 'position: absolute;top:"+r_pos[i][0] +"px ; left:"+ r_pos[i][1]+"px ;'><b>R"+(i+1)+"</b></div>")
+              .appendTo("#diagram");
+              }
+
+
+              $("<b><div id='c1_tag0' style = 'position: absolute;top:"+c_pos[0][0] +"px ; left:"+ c_pos[0][1]+"px ;'>C"+1+"</div></b>")
+              .appendTo("#diagram");
+              $("<b><div id='c1_tag1' style = 'position: absolute;top:"+c_pos[1][0] +"px ; left:"+ c_pos[1][1]+"px ;'>C"+2+"= 0.001uF</div></b>")
+              .appendTo("#diagram");
+
+
+
+
+              mydiv.style.display="block";
+
+                var div1 = document.getElementById("diagram");
+                var div2 = document.getElementById("toolbox");
+                
+                //div1.classList.add("no-pointer-events");
+                //div2.classList.add("no-pointer-events");
+
+
+          }
+
+
+
+            
+          }
+            }
+          }
+
+        }
+
+
+        }
+
+        else{
+
+          console.log("Entered zone-1");
+
+          r_top=document.querySelector('#'+s + '').getBoundingClientRect().top +50;
+          r_left=document.querySelector('#'+s+ '').getBoundingClientRect().left -170;
+
+          if(s[0]=='r')
+          r_pos[0]=[r_top,r_left];
+
+          else{
+            c_pos[0]=[r_top,r_left];
+          }
+
+
+          if(amp[s][2]!=arr[2])
+          s=amp[s][2];
+          else
+           s=amp[s][1];
+          
+        if(s[0]!='r' ||amp[s].length!=2 || amp[s][1]!=arr[7]){
+          alert("Wrong Connection");
+        }
+        else{
+
+          r_top=document.querySelector('#'+s + '').getBoundingClientRect().top +50;
+          r_left=document.querySelector('#'+s+ '').getBoundingClientRect().left -170;
+          r_pos[2]=[r_top,r_left];
+
+
+
+            s=amp[arr[2]][1];
+            if(s[0]!='r' ||amp[s].length!=3 || amp[s][2]!=arr[7]){
+              alert("Wrong Connection");
+            }
+            else{
+
+              r_top=document.querySelector('#'+s + '').getBoundingClientRect().top +50;
+              r_left=document.querySelector('#'+s+ '').getBoundingClientRect().left -170;
+              r_pos[3]=[r_top,r_left];
+
+
+
+
+
+              if(amp[s][0]!=arr[2])
+              s=amp[s][0];
+              else
+               s=amp[s][1];
+
+               if((s[0]!='r' ||amp[s].length!=2 || amp[s][0][0]!='c') && (s[0]!='c' ||amp[s].length!=2 || amp[s][0][0]!='r')){
+                alert("Wrong Connection");
+              }
+              else{
+
+                r_top=document.querySelector('#'+s + '').getBoundingClientRect().top +50;
+                r_left=document.querySelector('#'+s+ '').getBoundingClientRect().left -170;
+                if(s[0]=='r')
+                r_pos[1]=[r_top,r_left];
+
+                else{
+                  c_pos[1]=[r_top,r_left];
+                }
+
+
+
+
+                s=amp[s][0];
+                if((s[0]!='c' ||amp[s].length!=2 || amp[s][0]!=arr[7]) && (s[0]!='r' ||amp[s].length!=2 || amp[s][0]!=arr[7])){
+                  alert("Wrong Connection");
+                }
+
+                else{
+
+                  r_top=document.querySelector('#'+s + '').getBoundingClientRect().top +50;
+                  r_left=document.querySelector('#'+s+ '').getBoundingClientRect().left -170;
+                  if(s[0]=='r')
+                  r_pos[1]=[r_top,r_left];
+    
+                  else{
+                    c_pos[1]=[r_top,r_left];
+                  }
+
+
+
+
+                  s=amp[amp[arr[2]][0]][0];
+                  if((s[0]!='c' ||amp[s].length!=2 || amp[s][0]!=arr[7]) && (s[0]!='r' ||amp[s].length!=2 || amp[s][0]!=arr[7])){
+                    alert("Wrong Connection");
+                  }
+                  else{
+
+                    r_top=document.querySelector('#'+s + '').getBoundingClientRect().top +50;
+                    r_left=document.querySelector('#'+s+ '').getBoundingClientRect().left -170;
+                    if(s[0]=='r')
+                      r_pos[0]=[r_top,r_left];
+
+                      else{
+                        c_pos[0]=[r_top,r_left];
+                      }
+
+
+
+
+
+                    alert("Right Connections...Go Ahead!!");
+
+                    var v_top=document.querySelector('#'+s_v + '').getBoundingClientRect().top + 50;
+                    var v_left=document.querySelector('#'+s_v + '').getBoundingClientRect().left - 170;
+
+                    $("<div id='abcd' style = 'position: absolute;top:"+v_top +"px ; left:"+ v_left+"px ;'><b>+ V,f -</b></div>")
+                    .appendTo("#diagram");
+
+
+
+                    for(var i=0;i<4;i++){
+                      $("<div id='r1_tag' style = 'position: absolute;top:"+r_pos[i][0] +"px ; left:"+ r_pos[i][1]+"px ;'><b>R"+(i+1)+"</b></div>")
+                    .appendTo("#diagram");
+                    }
+      
+      
+                    $("<div id='r1_tag' style = 'position: absolute;top:"+c_pos[0][0] +"px ; left:"+ c_pos[0][1]+"px ;'><b>C"+1+"(unknown)</b></div>")
+                    .appendTo("#diagram");
+                    $("<div id='r1_tag' style = 'position: absolute;top:"+c_pos[1][0] +"px ; left:"+ c_pos[1][1]+"px ;'><b>C"+2+"</b></div>")
+                    .appendTo("#diagram");
+
+
+
+                    mydiv.style.display="block";
+
+                    var div1 = document.getElementById("diagram");
+                    var div2 = document.getElementById("toolbox");
+                    
+                    div1.classList.add("no-pointer-events");
+                    div2.classList.add("no-pointer-events");
+
+
+
+
+                  }
+                }
+
+
+              }
+
+
+
+        }
+
+
+
+
+
+        }
+
+      }
+
+      }
+
+
+    }
+
+    
+    //jsPlumb.removeAllEndpoints("item_input");
+}
+function setsAreEqual(a, b) {
+  if (a.size !== b.size) {
+    return false;
+  }
+
+  return Array.from(a).every(element => {
+    return b.has(element);
+  });
+}
+
+</script>
+</body>
+</html>
