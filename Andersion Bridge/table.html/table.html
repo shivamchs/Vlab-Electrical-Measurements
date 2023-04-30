@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dynamic Table</title>
+    <style>
+        table, th, td {
+          border:1px solid black;
+          
+        }
+        #myTable{
+          border:1px solid black;
+
+          width: 500px;
+          height: 100%;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js"></script>  
+	
+	<script>
+		function addRows() {
+			// Get user inputs
+			
+			const arr=[data1,data2,data3,data4,data5];
+            for (var i = 0; i < 5; i++) {
+				arr[i] = document.getElementById("data"+(i+1)).value;			
+			}
+
+
+			var data1 = document.getElementById("data1").value;
+			var data2 = document.getElementById("data2").value;
+			var data3 = document.getElementById("data3").value;
+			var data4 = document.getElementById("data4").value;
+			var data5 = document.getElementById("data5").value;
+			if(data1=="" || data2=="" || data3=="" || data4=="" || data5=="" )
+			{
+				swal("Fill empty values");
+
+				return;}
+			// Create a new table row for each input value
+            var row = document.createElement("tr");
+
+            for (var i = 1; i <= 5; i++) {
+				// Get the value of the current input field
+				var data = eval("data" + i);
+
+				// Create a new table row element
+
+				// Create a new table data element
+				var cell = document.createElement("td");
+				cell.innerHTML = data;
+
+				// Add the table data to the table row
+				row.appendChild(cell);
+
+				// Add the table row to the table
+				document.getElementById("myTable").appendChild(row);
+			}
+            for (var i = 1; i <= 5; i++) {
+                
+                document.getElementById("data"+i).value = "";
+
+            }
+
+		}
+	</script>
+</head>
+<body>
+	<label>Enter R1:</label>
+	<input type="number" id="data1"><br>
+
+	<label>Enter R2:</label>
+	<input type="number" id="data2"><br>
+
+	<label>Enter R3:</label>
+	<input type="number" id="data3"><br>
+
+	<label>Enter R4:</label>
+	<input type="number" id="data4"><br>
+
+	<label>Enter Volatge:</label>
+	<input type="number" id="data5"><br>
+
+	<button onclick="addRows()">Add Rows</button>
+
+    <div id="tex1">Observation Table</div>
+	<table id="myTable">
+        <tr>
+            <th>R1</th>
+            <th>R2</th>
+            <th>R3</th>
+            <th>R4</th>
+            <th>Volatge</th>
+        </tr>
+	</table>
+</body>
+</html>
